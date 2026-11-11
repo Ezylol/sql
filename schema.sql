@@ -1,15 +1,21 @@
--- Esquema do sistema de manutenção industrial SENAI.
--- Compatível com MySQL 8.0.16+ (para aplicação das constraints CHECK).
--- Execute este arquivo antes de seed.sql.
+-- Versão principal funcional do projeto.
+-- Cria o banco e as tabelas do sistema de manutenção industrial SENAI.
+-- MySQL 8.0.16+.
 
-CREATE TABLE unidades_senai (
+CREATE DATABASE IF NOT EXISTS manutencao_industrial
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+
+USE manutencao_industrial;
+
+CREATE TABLE IF NOT EXISTS unidades_senai (
     id_unidade INT NOT NULL AUTO_INCREMENT,
     nome_unidade VARCHAR(100) NOT NULL,
     cidade VARCHAR(50) NOT NULL,
     PRIMARY KEY (id_unidade)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE linhas_producao (
+CREATE TABLE IF NOT EXISTS linhas_producao (
     id_linha INT NOT NULL AUTO_INCREMENT,
     id_unidade INT NOT NULL,
     nome_linha VARCHAR(100) NOT NULL,
@@ -18,7 +24,7 @@ CREATE TABLE linhas_producao (
         FOREIGN KEY (id_unidade) REFERENCES unidades_senai (id_unidade)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE tipos_maquina (
+CREATE TABLE IF NOT EXISTS tipos_maquina (
     id_tipo INT NOT NULL AUTO_INCREMENT,
     nome_tipo VARCHAR(50) NOT NULL,
     horas_revisao_padrao INT NOT NULL,
@@ -26,7 +32,7 @@ CREATE TABLE tipos_maquina (
     CONSTRAINT chk_tipo_horas_revisao CHECK (horas_revisao_padrao > 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE maquinas_senai (
+CREATE TABLE IF NOT EXISTS maquinas_senai (
     id_maquina INT NOT NULL AUTO_INCREMENT,
     id_linha INT NOT NULL,
     id_tipo INT NOT NULL,
@@ -43,7 +49,7 @@ CREATE TABLE maquinas_senai (
         CHECK (status_operacao IN ('ATIVA', 'MANUTENCAO', 'DESATIVADA'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE componentes_maq (
+CREATE TABLE IF NOT EXISTS componentes_maq (
     id_componente INT NOT NULL AUTO_INCREMENT,
     id_maquina INT NOT NULL,
     nome_componente VARCHAR(100) NOT NULL,
@@ -56,7 +62,7 @@ CREATE TABLE componentes_maq (
     CONSTRAINT chk_componente_limite CHECK (limite_horas_alerta > 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE tecnicos (
+CREATE TABLE IF NOT EXISTS tecnicos (
     id_tecnico INT NOT NULL AUTO_INCREMENT,
     nome_tecnico VARCHAR(100) NOT NULL,
     especialidade VARCHAR(50) NOT NULL,
@@ -66,7 +72,7 @@ CREATE TABLE tecnicos (
         CHECK (nivel_certificacao IN ('JUNIOR', 'PLENO', 'SENIOR', 'SPECIALIST'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE ordens_servico (
+CREATE TABLE IF NOT EXISTS ordens_servico (
     id_ordem INT NOT NULL AUTO_INCREMENT,
     id_maquina INT NOT NULL,
     id_tecnico INT NOT NULL,
@@ -84,7 +90,7 @@ CREATE TABLE ordens_servico (
         CHECK (status_os IN ('ABERTA', 'EM_ANDAMENTO', 'CONCLUIDA', 'CANCELADA'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE estoque_pecas (
+CREATE TABLE IF NOT EXISTS estoque_pecas (
     id_peca INT NOT NULL AUTO_INCREMENT,
     codigo_part_number VARCHAR(50) NOT NULL,
     descricao VARCHAR(150) NOT NULL,
@@ -96,7 +102,7 @@ CREATE TABLE estoque_pecas (
     CONSTRAINT chk_peca_preco CHECK (preco_unitario > 0.00)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE pecas_os (
+CREATE TABLE IF NOT EXISTS pecas_os (
     id_ordem INT NOT NULL,
     id_peca INT NOT NULL,
     qtd_utilizada INT NOT NULL,
@@ -110,7 +116,7 @@ CREATE TABLE pecas_os (
     CONSTRAINT chk_pecas_os_preco CHECK (preco_aplicado >= 0.00)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE historico_sensores (
+CREATE TABLE IF NOT EXISTS historico_sensores (
     id_leitura INT NOT NULL AUTO_INCREMENT,
     id_ordem INT NOT NULL,
     temperatura_medida DECIMAL(5,2) NOT NULL,

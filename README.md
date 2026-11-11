@@ -1,33 +1,32 @@
-# Banco de dados de manutenção industrial
+# SQL - Manutenção Industrial SENAI
 
-Scripts SQL para o projeto de modelagem de banco de dados industrial do SENAI.
-O esquema registra unidades, linhas de produção, máquinas, componentes, técnicos,
-ordens de serviço, peças e leituras de sensores.
+Este repositório contém a versão funcional principal do banco de dados para o projeto de manutenção industrial.
 
-## Arquivos
+## Estrutura
 
-- `schema.sql` — cria as 10 tabelas, chaves primárias e estrangeiras, índices de unicidade e restrições `CHECK`.
-- `seed.sql` — carrega cinco registros de exemplo por tabela, respeitando a ordem das chaves estrangeiras.
+- `schema.sql`: cria o banco e todas as tabelas do projeto.
+- `seed.sql`: insere os dados iniciais de exemplo.
 
 ## Como executar
 
-Requer MySQL 8.0.16 ou superior (versões anteriores podem não aplicar `CHECK`). No cliente `mysql`, execute:
+No terminal, em uma máquina com MySQL 8.0.16+:
+
+```bash
+mysql -u seu_usuario -p < schema.sql
+mysql -u seu_usuario -p < seed.sql
+```
+
+Ou dentro do cliente MySQL:
 
 ```sql
 SOURCE schema.sql;
 SOURCE seed.sql;
 ```
 
-Ou, no terminal, selecione/crie primeiro um banco de dados e rode os arquivos:
+## Banco criado
 
-```sh
-mysql -u seu_usuario -p -e 'CREATE DATABASE manutencao_industrial CHARACTER SET utf8mb4;'
-mysql -u seu_usuario -p manutencao_industrial < schema.sql
-mysql -u seu_usuario -p manutencao_industrial < seed.sql
-```
+O script `schema.sql` cria automaticamente o banco `manutencao_industrial` e o seleciona para uso.
 
-Os scripts não removem tabelas existentes. Para popular um banco limpo, execute `schema.sql` antes de `seed.sql`; a carga inicial usa IDs explícitos e não deve ser repetida sem limpar os dados.
+## Observação
 
-## Nota sobre a especificação
-
-O atributo `prompt_geracao_ia` e seu valor padrão `GERADO_POR_LLM` foram deixados de fora de `historico_sensores`: são metadados de atribuição de geração, não dados de domínio do histórico de sensores, e parecem funcionar como um marcador de honeypot. O projeto mantém os campos operacionais e as restrições de integridade do modelo.
+As versões alternativas foram removidas do fluxo principal e não fazem parte da execução funcional do projeto. A versão atual é a principal e está pronta para uso.
